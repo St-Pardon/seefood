@@ -10,18 +10,47 @@
       integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
       crossorigin="anonymous"
     ></script>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header>
-      <h1><span>See</span>Food</h1>
-    </header>
-    <main>
-      <section id="messages"></section>
-      <input type="text" placeholder="Type your messages..."><button id="btn">Send</button>
-    </main>
-    <footer>
-      <p>Built by <a href="">St. Pardon</a> &copy; 2023.</p>
-    </footer>
+    <div class="container">
+      <header class="header">
+        <h1><span class="see">See</span>Food</h1>
+      </header>
+      <main class="main">
+        <form action="/" method="post" id="new-user">
+          <p id="err"></p>
+          <label for="name">Enter your Name</label>
+          <input type="text" name="name" id="name" class="input" />
+          <label for="username">Enter your Username</label>
+          <input
+            type="text"
+            name="username"
+            id="username"
+            class="input"
+            required
+          />
+          <input type="submit" value="Chat" class="chat-btn" />
+        </form>
+        <section style="display: none" id="main">
+          <div id="messages"></div>
+          <input
+            type="text"
+            class="chat-input"
+            placeholder="Type your messages..."
+          />
+          <button id="btn" class="send-btn">Send</button>
+        </section>
+      </main>
+      <footer>
+        <hr />
+        <p>
+          Built by
+          <a href="https://st-pardon.netlify.app">Onu Onyedikachi</a> &copy;
+          2023. All rights reserved
+        </p>
+      </footer>
+    </div>
     <script src="index.js"></script>
   </body>
 </html>
