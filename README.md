@@ -2,6 +2,21 @@
 
 A Real-Time resturant chatbot application to assist customers in placing orders for their preferred meals.
 
+## Contents
+- [Objective](#objective)
+- [Purpose](#purpose)
+- [Getting Started](#getting-started)
+    - [Prerequisite](#prerequisite)
+    - [Setup](#setup)
+- [Tasks](#tasks)
+- [Tools](#tools)
+- [Deployment](#deployment)
+- [Authors](#author)
+- [Contributions](#contributions)
+
+___
+___
+
 ## Objective
 An application to simplyfy the ability for customers to order from the response by sending options and the backend would have a chat app that would respond to the options in real-time.
 
@@ -36,6 +51,9 @@ To start up the application, follow the following steps
     npm start
     ```
 - Step 6: Open the url displayed on the terminal in your web browser and explore the application
+
+## Tasks
+The tasks expected to be achieved for the project are included [here](./Tasks.md)
 
 ## Tools
 The tools use in making the application includes
