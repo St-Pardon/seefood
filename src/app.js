@@ -34,7 +34,7 @@ app
     }
     users.push({ name, username });
     res.status(201).end('completed');
-    console.log(users);
+    // console.log(users);
   });
 
 io.use((socket, next) => {
@@ -50,10 +50,10 @@ io.on('connection', (socket) => {
   let idx = users.findIndex((item) => item.username === socket.username);
   users[idx].userId = socket.id;
   users[idx].history = [];
-  socket.emit('welcome', prompts);
+  socket.emit('welcome', {name: users[idx].name, prompts});
 
   socket.on('1', (data) => {
-    console.log(foods);
+    // console.log(foods);
     socket.emit(data, foods);
   });
   socket.on('99', (data) => {
@@ -67,7 +67,7 @@ io.on('connection', (socket) => {
     lastOrder = users[idx].history[users[idx].history.length - 1];
   }
     socket.emit(data, { lastOrder, prompts });
-    console.log(users[0].history);
+    // console.log(users[0].history);
   });
 
   socket.on('98', (data) => {
@@ -114,7 +114,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     users.splice(users.findIndex(id => id === socket.id))
-    console.log('User left');
+    // console.log('User left');
   });
 });
 

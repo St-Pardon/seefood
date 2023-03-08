@@ -1,6 +1,7 @@
 const socket = io('http://127.0.0.1:4302', { autoConnect: false });
 
 const message = document.getElementById('messages');
+const msg = document.getElementById('msg');
 const send = document.getElementById('btn');
 
 const commands = [1, 99, 98, 97, 0];
@@ -32,8 +33,8 @@ document.forms['new-user'].addEventListener('submit', (e) => {
     });
 });
 
-socket.on('welcome', (prompts) => {
-  message.innerHTML += `<p class="sender">Hello and Welcome to SeeFood, the best place for your Hotdog and Not Hotdog meals.</p>`;
+socket.on('welcome', ({ name, prompts }) => {
+  message.innerHTML += `<p class="sender">Hello ${name} and Welcome to SeeFood, the best place for your Hotdog and Not Hotdog meals.</p>`;
   message.appendChild(handlePrompt('div', prompts));
   message.appendChild(handlePrompt('button', commands));
   message.scrollTop = message.scrollHeight;
@@ -88,10 +89,9 @@ socket.on('97', ({ lastOrder, prompts }) => {
 });
 
 socket.on('0', ({ prompts, lastOrder }) => {
-  if (!lastOrder){
+  if (!lastOrder) {
     message.innerHTML += `<p class="sender">You have no order to cancel</p>`;
-  }
-  else{
+  } else {
     message.innerHTML += `<p class="sender">Your order ${lastOrder.food} with the id ${lastOrder.id} have been ${lastOrder.status}</p>`;
   }
   message.appendChild(handlePrompt('div', prompts));
@@ -106,7 +106,7 @@ socket.on('chat', (data) => {
   message.scrollTop = message.scrollHeight;
 });
 
-// handle bot prompts 
+// handle bot prompts
 const handlePrompt = (elem, commands, val) => {
   let div = document.createElement('div');
   div.setAttribute('class', 'prompt-container');
@@ -129,7 +129,7 @@ const handlePrompt = (elem, commands, val) => {
       div.setAttribute('class', 'prompt-container');
     }
     return div;
-  } 
+  }
 
   for (let i in commands) {
     let element = document.createElement(elem);
@@ -142,11 +142,11 @@ const handlePrompt = (elem, commands, val) => {
   return div;
 };
 
-// handle button clicks 
+// handle button clicks
 const handleClick = (e) => {
   //   message.scrollTo(0, message.scrollHeight + 100);
-  message.scrollTop = message.scrollHeight;
   message.innerHTML += `<p class="receiver">${e.innerText}</p>`;
+  message.scrollTop = message.scrollHeight;
   if (e.value) {
     currentOrder = e.innerText;
     socket.emit('food', e.innerText);
@@ -154,4 +154,21 @@ const handleClick = (e) => {
     socket.emit(e.innerText, e.innerText);
   }
 };
- 
+
+const handleSend = () => {message.innerHTML += `<p class="receiver">${msg.value}</p>`;
+if (parseInt(msg.value) < 2 || parseInt(msg.value) > 90) {
+  socket.emit(msg.value, msg.value);
+} else {
+  message.innerHTML += `<p class="sender">Command not found, Please enter a valid command</p>`;
+}
+msg.value = '';
+message.scrollTop = message.scrollHeight;
+}
+
+send.onclick = handleSend
+  
+msg.onkeydown = (e) => {
+  if (e.key === "Enter"){
+    handleSend()
+  }
+}

@@ -1,3 +1,6 @@
+* {
+  scroll-behavior: smooth;
+}
 body{
     height: 93vh;
 }
@@ -62,6 +65,8 @@ label {
 #messages {
   height: 90%;
   background-color: tan;
+  background-image: url('https://res.cloudinary.com/practicaldev/image/fetch/s--WAKqnINn--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/tw0nawnvo0zpgm5nx4fp.png');
+  background-size: cover;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -71,7 +76,7 @@ label {
 .chat-input {
   display: inline-block;
   height: 40px;
-  width: 86%;
+  width: 85%;
   font-size: 1rem;
   border: none;
   border-bottom: 1px solid #f4f4f4;
@@ -83,6 +88,11 @@ label {
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
+}
+
+.send-div{
+  display: grid;
+  grid-template-columns: 1fr 80px;
 }
 
 .sender{
@@ -105,6 +115,7 @@ label {
     text-align: center;
     color: grey;
 }
+
 .prompt-btn{
     margin: 2px 5px;
     border: none;
