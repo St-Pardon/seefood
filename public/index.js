@@ -36,17 +36,26 @@ socket.on('welcome', (prompts) => {
   message.innerHTML += `<p class="sender">Hello and Welcome to SeeFood, the best place for your Hotdog and Not Hotdog meals.</p>`;
   message.appendChild(handlePrompt('div', prompts));
   message.appendChild(handlePrompt('button', commands));
+  message.scrollTop = message.scrollHeight;
 });
 
 socket.on('1', (foods) => {
   message.innerHTML += `<p class="sender">Select from our wide range of delicacies</p>`;
   message.appendChild(handlePrompt('button', foods, true));
+  message.scrollTop = message.scrollHeight;
 });
 
 socket.on('99', ({ prompts, lastOrder }) => {
-  message.innerHTML += `<p class="sender">Congratulations, Your order ${lastOrder.food} with the id ${lastOrder.id} have been ${lastOrder.status}</p>`;
+  // add check for open orders
+  if (lastOrder) {
+    message.innerHTML += `<p class="sender">Order Placed</p>`;
+    message.innerHTML += `<p class="sender">Congratulations, Your order ${lastOrder.food} with the id ${lastOrder.id} have been ${lastOrder.status}</p>`;
+  } else {
+    message.innerHTML += `<p class="sender">No order placed.</p>`;
+  }
   message.appendChild(handlePrompt('div', prompts));
   message.appendChild(handlePrompt('button', commands));
+  message.scrollTop = message.scrollHeight;
 });
 
 socket.on('98', ({ prompts, history }) => {
@@ -64,6 +73,7 @@ socket.on('98', ({ prompts, history }) => {
   }
   message.appendChild(handlePrompt('div', prompts));
   message.appendChild(handlePrompt('button', commands));
+  message.scrollTop = message.scrollHeight;
 });
 
 socket.on('97', ({ lastOrder, prompts }) => {
@@ -74,18 +84,26 @@ socket.on('97', ({ lastOrder, prompts }) => {
   }
   message.appendChild(handlePrompt('div', prompts));
   message.appendChild(handlePrompt('button', commands));
+  message.scrollTop = message.scrollHeight;
 });
 
 socket.on('0', ({ prompts, lastOrder }) => {
-  message.innerHTML += `<p class="sender">Your order ${lastOrder.food} with the id ${lastOrder.id} have been ${lastOrder.status}</p>`;
+  if (!lastOrder){
+    message.innerHTML += `<p class="sender">You have no order to cancel</p>`;
+  }
+  else{
+    message.innerHTML += `<p class="sender">Your order ${lastOrder.food} with the id ${lastOrder.id} have been ${lastOrder.status}</p>`;
+  }
   message.appendChild(handlePrompt('div', prompts));
   message.appendChild(handlePrompt('button', commands));
+  message.scrollTop = message.scrollHeight;
 });
 
 socket.on('chat', (data) => {
   message.innerHTML += `<p class="sender">${data.msg}</p>`;
   message.appendChild(handlePrompt('div', data.prompt));
   message.appendChild(handlePrompt('button', [99, 0]));
+  message.scrollTop = message.scrollHeight;
 });
 
 // handle bot prompts 
@@ -111,7 +129,7 @@ const handlePrompt = (elem, commands, val) => {
       div.setAttribute('class', 'prompt-container');
     }
     return div;
-  }
+  } 
 
   for (let i in commands) {
     let element = document.createElement(elem);
@@ -133,10 +151,6 @@ const handleClick = (e) => {
     currentOrder = e.innerText;
     socket.emit('food', e.innerText);
   } else {
-    if (e.innerText === '99' && !currentOrder) {
-      message.innerHTML += `<p class="sender">Sorry you do not have any active order to checkout</p>`;
-      return;
-    }
     socket.emit(e.innerText, e.innerText);
   }
 };

@@ -57,6 +57,7 @@ io.on('connection', (socket) => {
     socket.emit(data, foods);
   });
   socket.on('99', (data) => {
+    if (users[idx].history[0]){
     lastOrder = users[idx].history[users[idx].history.length - 1];
     users[idx].history.push({
       ...lastOrder,
@@ -64,8 +65,8 @@ io.on('connection', (socket) => {
       status: 'Confirmed',
     });
     lastOrder = users[idx].history[users[idx].history.length - 1];
+  }
     socket.emit(data, { lastOrder, prompts });
-    // socket.emit('welcome', prompts);
     console.log(users[0].history);
   });
 
@@ -78,14 +79,18 @@ io.on('connection', (socket) => {
   });
 
   socket.on('0', (data) => {
-    lastOrder = users[idx].history[users[idx].history.length - 1];
-    users[idx].history.push({
-      ...lastOrder,
-      date: Date.now(),
-      status: 'Cancelled',
-    });
-    lastOrder = users[idx].history[users[idx].history.length - 1];
-    socket.emit(data, { prompts, lastOrder });
+    if (users[idx].history[0]){
+      lastOrder = users[idx].history[users[idx].history.length - 1];
+      users[idx].history.push({
+        ...lastOrder,
+        date: Date.now(),
+        status: 'Cancelled',
+      });
+      lastOrder = users[idx].history[users[idx].history.length - 1];
+      socket.emit(data, { prompts, lastOrder });
+    } else {
+      socket.emit(data, { prompts, lastOrder: '' });
+    }
   });
 
   socket.on('food', (data) => {
