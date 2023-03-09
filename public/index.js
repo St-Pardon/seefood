@@ -5,7 +5,6 @@ const msg = document.getElementById('msg');
 const send = document.getElementById('btn');
 
 const commands = [1, 99, 98, 97, 0];
-let currentOrder;
 
 const connectChat = (username) => {
   socket.auth = { username };
@@ -41,16 +40,19 @@ socket.on('welcome', ({ name, prompts }) => {
 });
 
 socket.on('1', (foods) => {
-  message.innerHTML += `<p class="sender">Select from our wide range of delicacies</p>`;
+  message.innerHTML += `<p class="sender">Select from our wide range of delicacies. Click on the item or type the corresponding number to place an order.</p>`;
   message.appendChild(handlePrompt('button', foods, true));
   message.scrollTop = message.scrollHeight;
 });
 
-socket.on('99', ({ prompts, lastOrder }) => {
-  // add check for open orders
-  if (lastOrder) {
+socket.on('99', ({ prompts, history }) => {
+  if (history[0]) {
     message.innerHTML += `<p class="sender">Order Placed</p>`;
-    message.innerHTML += `<p class="sender">Congratulations, Your order ${lastOrder.food} with the id ${lastOrder.id} have been ${lastOrder.status}</p>`;
+    message.innerHTML += `<p class="sender">Congratulations, Your order ${
+      history[history.length - 1].food
+    } with the id ${history[history.length - 1].id} have been ${
+      history[history.length - 1].status
+    }</p>`;
   } else {
     message.innerHTML += `<p class="sender">No order placed.</p>`;
   }
@@ -77,9 +79,13 @@ socket.on('98', ({ prompts, history }) => {
   message.scrollTop = message.scrollHeight;
 });
 
-socket.on('97', ({ lastOrder, prompts }) => {
-  if (lastOrder) {
-    message.innerHTML += `<p class="sender">Your last order was ${lastOrder.food} with the id ${lastOrder.id}. The status is ${lastOrder.status}</p>`;
+socket.on('97', ({ history, prompts }) => {
+  if (history[0]) {
+    message.innerHTML += `<p class="sender">Your last order was ${
+      history[history.length - 1].food
+    } with the id ${history[history.length - 1].id}. The status is ${
+      history[history.length - 1].status
+    }</p>`;
   } else {
     message.innerHTML += `<p class="sender">You have not created any order.</p>`;
   }
@@ -101,12 +107,13 @@ socket.on('0', ({ prompts, lastOrder }) => {
 
 socket.on('chat', (data) => {
   message.innerHTML += `<p class="sender">${data.msg}</p>`;
-  message.appendChild(handlePrompt('div', data.prompt));
-  message.appendChild(handlePrompt('button', [99, 0]));
+  if (data.prompt) {
+    message.appendChild(handlePrompt('div', data.prompt));
+    message.appendChild(handlePrompt('button', [99, 0]));
+  }
   message.scrollTop = message.scrollHeight;
 });
 
-// handle bot prompts
 const handlePrompt = (elem, commands, val) => {
   let div = document.createElement('div');
   div.setAttribute('class', 'prompt-container');
@@ -133,7 +140,7 @@ const handlePrompt = (elem, commands, val) => {
 
   for (let i in commands) {
     let element = document.createElement(elem);
-    element.innerHTML += commands[i];
+    element.innerHTML += `${parseInt(i) + 10} - ${commands[i]}`;
     element.setAttribute('class', 'prompt-btn');
     element.setAttribute('onclick', 'handleClick(this)');
     element.setAttribute('value', parseInt(i) + 10);
@@ -142,33 +149,33 @@ const handlePrompt = (elem, commands, val) => {
   return div;
 };
 
-// handle button clicks
 const handleClick = (e) => {
-  //   message.scrollTo(0, message.scrollHeight + 100);
   message.innerHTML += `<p class="receiver">${e.innerText}</p>`;
   message.scrollTop = message.scrollHeight;
   if (e.value) {
-    currentOrder = e.innerText;
-    socket.emit('food', e.innerText);
+    socket.emit('food', e.value);
   } else {
     socket.emit(e.innerText, e.innerText);
   }
 };
 
-const handleSend = () => {message.innerHTML += `<p class="receiver">${msg.value}</p>`;
-if (parseInt(msg.value) < 2 || parseInt(msg.value) > 90) {
-  socket.emit(msg.value, msg.value);
-} else {
-  message.innerHTML += `<p class="sender">Command not found, Please enter a valid command</p>`;
-}
-msg.value = '';
-message.scrollTop = message.scrollHeight;
-}
-
-send.onclick = handleSend
-  
-msg.onkeydown = (e) => {
-  if (e.key === "Enter"){
-    handleSend()
+const handleSend = () => {
+  message.innerHTML += `<p class="receiver">${msg.value}</p>`;
+  if (parseInt(msg.value) < 2 || parseInt(msg.value) > 90) {
+    socket.emit(msg.value, msg.value);
+  } else if (parseInt(msg.value) > 2 && parseInt(msg.value) < 90) {
+    socket.emit('food', msg.value);
+  } else {
+    message.innerHTML += `<p class="sender">Command not found, Please enter a valid command</p>`;
   }
-}
+  msg.value = '';
+  message.scrollTop = message.scrollHeight;
+};
+
+send.onclick = handleSend;
+
+msg.onkeydown = (e) => {
+  if (e.key === 'Enter') {
+    handleSend();
+  }
+};

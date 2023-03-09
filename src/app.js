@@ -7,7 +7,6 @@ const app = new express();
 const server = http.createServer(app);
 const io = new Socket(server);
 
-
 let users = [];
 let lastOrder;
 const prompts = [
@@ -17,7 +16,16 @@ const prompts = [
   { msg: 'Select 97 to see your current order' },
   { msg: 'Select 0 to cancel your order.' },
 ];
-const foods = ['Hotdog', 'Pizza', 'Calamari', 'French Fires', 'chicken'];
+const foods = [
+  'Hotdog',
+  'Pizza',
+  'Calamari',
+  'French Fires',
+  'Fried Chicken',
+  'Baked bean',
+  'Salad',
+  'Ginger Soup',
+];
 
 app
   .use(express.json())
@@ -32,7 +40,7 @@ app
       res.status(401).end('already exist');
       return;
     }
-    users.push({ name, username });
+    users.push({ name, username, history: [] });
     res.status(201).end('completed');
     // console.log(users);
   });
@@ -49,37 +57,39 @@ io.use((socket, next) => {
 io.on('connection', (socket) => {
   let idx = users.findIndex((item) => item.username === socket.username);
   users[idx].userId = socket.id;
-  users[idx].history = [];
-  socket.emit('welcome', {name: users[idx].name, prompts});
+  socket.emit('welcome', { name: users[idx].name, prompts });
 
   socket.on('1', (data) => {
     // console.log(foods);
     socket.emit(data, foods);
   });
   socket.on('99', (data) => {
-    if (users[idx].history[0]){
-    lastOrder = users[idx].history[users[idx].history.length - 1];
-    users[idx].history.push({
-      ...lastOrder,
-      date: Date.now(),
-      status: 'Confirmed',
-    });
-    lastOrder = users[idx].history[users[idx].history.length - 1];
-  }
-    socket.emit(data, { lastOrder, prompts });
-    // console.log(users[0].history);
+    if (users[idx].history[0]) {
+      lastOrder = users[idx].history[users[idx].history.length - 1];
+      users[idx].history.push({
+        ...lastOrder,
+        date: Date.now(),
+        status: 'Confirmed',
+      });
+      lastOrder = users[idx].history[users[idx].history.length - 1];
+    }
+    socket.emit(data, { history: users[idx].history, prompts });
+    console.log(users[idx]);
+    // console.log(users[idx].history);
   });
 
   socket.on('98', (data) => {
+    // console.log(users[idx]);
     socket.emit(data, { history: users[idx].history, prompts });
   });
 
   socket.on('97', (data) => {
-    socket.emit(data, { lastOrder, prompts });
+    // console.log(users[idx]);
+    socket.emit(data, { history: users[idx].history, prompts });
   });
 
   socket.on('0', (data) => {
-    if (users[idx].history[0]){
+    if (users[idx].history[0]) {
       lastOrder = users[idx].history[users[idx].history.length - 1];
       users[idx].history.push({
         ...lastOrder,
@@ -101,19 +111,23 @@ io.on('connection', (socket) => {
       food: data,
       status: 'Opened',
     });
-    socket.emit('chat', {
-      msg: `Your order ${data} with the id of ${
-        users[idx].history[users[idx].history.length - 1].id
-      } have been created.`,
-      prompt: [
-        { msg: 'Select 99 to checkout your order.' },
-        { msg: 'Select 0 to cancel your order.' },
-      ],
-    });
+    parseInt(data) - 10 > foods.length
+      ? socket.emit('chat', {
+          msg: 'Food Not Found, Try again',
+        })
+      : socket.emit('chat', {
+          msg: `Your order ${foods[parseInt(data) - 10]} with the id of ${
+            users[idx].history[users[idx].history.length - 1].id
+          } have been created.`,
+          prompt: [
+            { msg: 'Select 99 to checkout your order.' },
+            { msg: 'Select 0 to cancel your order.' },
+          ],
+        });
   });
 
   socket.on('disconnect', () => {
-    users.splice(users.findIndex(id => id === socket.id))
+    users.splice(users.findIndex((id) => id === socket.id));
     // console.log('User left');
   });
 });
