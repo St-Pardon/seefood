@@ -1,6 +1,8 @@
 import express from 'express';
 import http from 'http';
 import { Server as Socket } from 'socket.io';
+import { prompts } from './data/prompts.data';
+import { foods } from './data/foods.data';
 
 const PORT = 4302;
 const app = new express();
@@ -9,23 +11,6 @@ const io = new Socket(server);
 
 let users = [];
 let lastOrder;
-const prompts = [
-  { msg: 'Select 1 to place an order.' },
-  { msg: 'Select 99 to checkout your order.' },
-  { msg: 'Select 98 to see your order history.' },
-  { msg: 'Select 97 to see your current order' },
-  { msg: 'Select 0 to cancel your order.' },
-];
-const foods = [
-  'Hotdog',
-  'Pizza',
-  'Calamari',
-  'French Fires',
-  'Fried Chicken',
-  'Baked bean',
-  'Salad',
-  'Ginger Soup',
-];
 
 app
   .use(express.json())
@@ -42,7 +27,6 @@ app
     }
     users.push({ name, username, history: [] });
     res.status(201).end('completed');
-    // console.log(users);
   });
 
 io.use((socket, next) => {
@@ -60,7 +44,6 @@ io.on('connection', (socket) => {
   socket.emit('welcome', { name: users[idx].name, prompts });
 
   socket.on('1', (data) => {
-    // console.log(foods);
     socket.emit(data, foods);
   });
   socket.on('99', (data) => {
@@ -74,17 +57,13 @@ io.on('connection', (socket) => {
       lastOrder = users[idx].history[users[idx].history.length - 1];
     }
     socket.emit(data, { history: users[idx].history, prompts });
-    console.log(users[idx]);
-    // console.log(users[idx].history);
   });
 
   socket.on('98', (data) => {
-    // console.log(users[idx]);
     socket.emit(data, { history: users[idx].history, prompts });
   });
 
   socket.on('97', (data) => {
-    // console.log(users[idx]);
     socket.emit(data, { history: users[idx].history, prompts });
   });
 
@@ -128,7 +107,6 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     users.splice(users.findIndex((id) => id === socket.id));
-    // console.log('User left');
   });
 });
 
