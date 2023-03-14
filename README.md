@@ -8,6 +8,7 @@ A Real-Time resturant chatbot application to assist customers in placing orders 
 - [Getting Started](#getting-started)
     - [Prerequisite](#prerequisite)
     - [Setup](#setup)
+- [Usage](#usage)
 - [Tasks](#tasks)
 - [Tools](#tools)
 - [Deployment](#deployment)
@@ -57,6 +58,23 @@ To start up the application, follow the following steps
     npm start
     ```
 - Step 7: Open the url displayed on the terminal in your web browser and explore the application
+
+## Usage
+The application is really simple to use, but for better understanding, here is a walk through
+
+- Firstly, lauch locally or use the [deployed](#deployment) demo. You'll land on a page to provide basic identification.
+![](./demo/Welcome.png)
+
+- When your `Name` and `Username` have been provided, you'll be redirected to the chat interface with a welcome message and some instruction on how to engage.
+![](./demo/chatbot_interface.png)
+
+- You can get started by clicking on the prompt corresponding to your need or typing it directly into the input field.
+
+- When an input is typed or prompt clicked, the user immediately gets a response from the bot. if the input is correct the right response is displayed and when the input is wrong, an error message is displayed.
+![](./demo/prompts.png) 
+
+- When a food is selected, the user is prompted to either confirm or cancel the order.
+![](./demo/confirm_order.png) 
 
 ## Tasks
 The tasks expected to be achieved for the project are included [here](./Tasks.md)
