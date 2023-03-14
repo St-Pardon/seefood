@@ -44,15 +44,19 @@ To start up the application, follow the following steps
     ```sh
     cd seefood/
     ```
-- Step 4: Install all the project dependencies
+- Step 4: Switch to the dev branch to run locally
+    ```sh
+    git checkout dev
+    ```
+- Step 5: Install all the project dependencies
     ```sh
     npm install
     ```
-- Step 5: Start the server
+- Step 6: Start the server
     ```sh
     npm start
     ```
-- Step 6: Open the url displayed on the terminal in your web browser and explore the application
+- Step 7: Open the url displayed on the terminal in your web browser and explore the application
 
 ## Tasks
 The tasks expected to be achieved for the project are included [here](./Tasks.md)
