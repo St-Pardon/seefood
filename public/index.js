@@ -1,4 +1,4 @@
-const socket = io('https://www.altschoolafrica.com/waitlist?school=engineering', { autoConnect: false });
+const socket = io('https://seefood-ryww.onrender.com', { autoConnect: false });
 
 const message = document.getElementById('messages');
 const msg = document.getElementById('msg');
