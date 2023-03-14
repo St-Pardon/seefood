@@ -1,8 +1,8 @@
 import express from 'express';
 import http from 'http';
 import { Server as Socket } from 'socket.io';
-import { prompts } from './data/prompts.data';
-import { foods } from './data/foods.data';
+import { prompts } from './data/prompts.data.js';
+import { foods } from './data/foods.data.js';
 
 const PORT = 4302;
 const app = new express();
