@@ -87,7 +87,7 @@ io.on('connection', (socket) => {
     users[idx].history.push({
       id,
       date: Date.now(),
-      food: data,
+      food: foods[parseInt(data) - 10],
       status: 'Opened',
     });
     parseInt(data) - 10 > foods.length

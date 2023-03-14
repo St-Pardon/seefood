@@ -7,4 +7,8 @@ export const foods = [
   'Baked bean',
   'Salad',
   'Ginger Soup',
+  'Lamb chopss',
+  'Cake',
+  'Pasta',
+  'ratatouille'
 ];
