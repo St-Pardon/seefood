@@ -23,6 +23,8 @@ An application to simplyfy the ability for customers to order from the response 
 ## Purpose
 A project submitted in partial fulfilment of Higher Diploma Certification in Software Engineering at [AltSchool Africa](https://www.altschoolafrica.com/).
 
+> To join AltSchool Africa, join the [waitlist](https://www.altschoolafrica.com/waitlist?school=engineering) and when the application is open be sure to use the code **ALT/SOE/022/1344** as referral to get discount.
+
 ## Getting Started
 ### Prerequisite
 To succefully run and test this application, you'll be needing the following:
@@ -63,7 +65,7 @@ The tools use in making the application includes
 - Version Control: Git and Github
 
 ## Deployment
-Coming soon 
+Application is live at [SeeFood](https://seefood-ryww.onrender.com) 🚀🚀🚀
 
 ## Author
 Onu Onyedikachi P.
