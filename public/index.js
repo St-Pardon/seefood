@@ -1,4 +1,4 @@
-const socket = io('https://seefood-ryww.onrender.com', { autoConnect: false });
+const socket = io('http://127.0.0.1:4302', { autoConnect: false });
 
 const message = document.getElementById('messages');
 const msg = document.getElementById('msg');
