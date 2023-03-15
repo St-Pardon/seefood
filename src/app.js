@@ -43,42 +43,45 @@ io.on('connection', (socket) => {
   users[idx].userId = socket.id;
   socket.emit('welcome', { name: users[idx].name, prompts });
 
-  socket.on('1', (data) => {
-    socket.emit(data, foods);
-  });
-  socket.on('99', (data) => {
-    if (users[idx].history[0]) {
-      lastOrder = users[idx].history[users[idx].history.length - 1];
-      users[idx].history.push({
-        ...lastOrder,
-        date: Date.now(),
-        status: 'Confirmed',
-      });
-      lastOrder = users[idx].history[users[idx].history.length - 1];
-    }
-    socket.emit(data, { history: users[idx].history, prompts });
-  });
-
-  socket.on('98', (data) => {
-    socket.emit(data, { history: users[idx].history, prompts });
-  });
-
-  socket.on('97', (data) => {
-    socket.emit(data, { history: users[idx].history, prompts });
-  });
-
-  socket.on('0', (data) => {
-    if (users[idx].history[0]) {
-      lastOrder = users[idx].history[users[idx].history.length - 1];
-      users[idx].history.push({
-        ...lastOrder,
-        date: Date.now(),
-        status: 'Cancelled',
-      });
-      lastOrder = users[idx].history[users[idx].history.length - 1];
-      socket.emit(data, { prompts, lastOrder });
-    } else {
-      socket.emit(data, { prompts, lastOrder: '' });
+  socket.on('prompt', (data) => {
+    switch (data) {
+      case '1':
+        socket.emit('res', { cmd: '1', foods });
+        break;
+      case '99':
+        if (users[idx].history[0]) {
+          lastOrder = users[idx].history[users[idx].history.length - 1];
+          users[idx].history.push({
+            ...lastOrder,
+            date: Date.now(),
+            status: 'Confirmed',
+          });
+          lastOrder = users[idx].history[users[idx].history.length - 1];
+        }
+        socket.emit('res', { cmd: '99', history: users[idx].history, prompts });
+        break;
+      case '98':
+        socket.emit('res', { cmd: '98', history: users[idx].history, prompts });
+        break;
+      case '97':
+        socket.emit('res', { cmd: '97', history: users[idx].history, prompts });
+        break;
+      case '0':
+        if (users[idx].history[0]) {
+          lastOrder = users[idx].history[users[idx].history.length - 1];
+          users[idx].history.push({
+            ...lastOrder,
+            date: Date.now(),
+            status: 'Cancelled',
+          });
+          lastOrder = users[idx].history[users[idx].history.length - 1];
+          socket.emit('res', { cmd: '0', prompts, lastOrder });
+        } else {
+          socket.emit('res', { cmd: '0', prompts, lastOrder: '' });
+        }
+        break;
+      default:
+        socket.emit('res', { msg: 'invalid command' });
     }
   });
 
